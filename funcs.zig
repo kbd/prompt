@@ -170,7 +170,7 @@ pub fn repo() !void {
     }
 }
 
-inline fn parseZero(val: ?[]const u8) u32 {
+pub inline fn parseZero(val: ?[]const u8) u32 {
     // get an int value out of the string, one way or another, defaulting to 0
     return fmt.parseInt(u32, val orelse "0", 10) catch 0;
 }

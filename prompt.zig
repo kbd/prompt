@@ -41,64 +41,32 @@ pub var CWD: []u8 = undefined; // colors
 pub var RUNNING: u16 = undefined;
 pub var SUSPENDED: u16 = undefined;
 
-// command line arguments need to be:
-// 1. last return code
-// 2. running/suspended jobs
-// 3. custom path (support zsh hashed directories)
-// colors - https://en.wikipedia.org/wiki/ANSI_escape_code
-
-// # configuration variables exposed:
-// #
-// # $PROMPT_FULL_HOST
-// #   shows the full hostname (\H vs \h in ps1)
-// #
-// # $PROMPT_SHORT_DISPLAY
-// #   don't display things like username@host if you're the main user on localhost
-// #   and the date if you have iTerm's timestamp on. i.e. elide unnecessary info.
-// #   "use short display" implies "hide date"
-// #
-// # $PROMPT_PREFIX
-// #   override to control what's displayed at the start of the prompt line
-// #
-// # $PROMPT_BARE
-// #   set to enable a very minimal prompt, useful for copying exmaples
-// #
-// # note: this code depends on colors.sh and on 'filter' program in path
-// _prompt_date() {
-//   echo -n "$eo${COL[grey]}$ec$dt$eo${COL[reset]}$ec:"
-// }
-
-fn dummy() !void {}
-
-fn filter(prompt_funcs: *std.StringHashMap(*const @TypeOf(dummy))) void {
-    var bare = os.getenv("PROMPT_BARE") orelse "";
-    if (!std.mem.eql(u8, bare, "")) {
-        // only show 'char' for bare prompt
-        var it = prompt_funcs.iterator();
-        while (it.next()) |pair| {
-            if (!std.mem.eql(u8, pair.key, "char")) {
-                _ = prompt_funcs.remove(pair.key);
-            }
-        }
-    }
-
-    const short_display = os.getenv("PROMPT_SHORT_DISPLAY") orelse "";
-    if (!std.mem.eql(u8, short_display, "")) {
-        // showing the host (and user, if not su/root) is unnecessary if local
-        if (funcs.is_local()) {
-            _ = prompt_funcs.remove("at");
-            _ = prompt_funcs.remove("host");
-        }
-        if (!funcs.is_su() and !funcs.is_root()) {
-            _ = prompt_funcs.remove("user");
-        }
-
-        // if no user or host, remove sep too
-        if (!prompt_funcs.contains("user") and !prompt_funcs.contains("host")) {
-            _ = prompt_funcs.remove("sep");
-        }
-    }
-}
+//!  Configurable environment variables:
+//!
+//!  $PROMPT_PREFIX - default ⚡
+//!    override to control what's displayed at the start of the prompt line
+//!
+//!  $PROMPT_BARE
+//!    set to enable a very minimal prompt
+//!
+//!  $PROMPT_FULL_HOST
+//!    shows the full hostname (bash: \H \h -- zsh: %M %m)
+//!
+//!  $PROMPT_LONG
+//!    display username@host even if local
+//!
+//!  $PROMPT_PATH
+//!    set to use things like Zsh's hashed paths
+//!    export PROMPT_PATH="$(print -P '%~')"
+//!
+//!  $PROMPT_RETURN_CODE
+//!    set to display the exit code of the previous program
+//!    export PROMPT_RETURN_CODE=$?
+//!
+//!  $PROMPT_JOBS
+//!    set to "{running} {suspended}" jobs (separated by space, defaults to 0 0)
+//!    for zsh:
+//!    export PROMPT_JOBS="$(jobs | PERL_SKIP_LOCALE_INIT=1 perl -ne 'BEGIN{%c=qw(r 0 s 0)}$c{lc $1}++ if /^\[\d+\]\s*[+-]?\s*(\w)/i;END{print "@c{qw(r s)}"}')"
 
 pub fn main() !void {
     // allocator setup
@@ -117,38 +85,39 @@ pub fn main() !void {
     var buf: [std.fs.MAX_PATH_BYTES]u8 = undefined;
     CWD = try std.os.getcwd(&buf);
 
-    // functions
-    var funcmap = std.StringHashMap(*const @TypeOf(dummy)).init(A);
-    defer funcmap.deinit();
+    const long = funcs.parseZero(os.getenv("PROMPT_LONG")) != 0;
 
-    try funcs.prefix();
-    try funcs.script();
-    try funcs.tab();
-    try funcs.screen();
-    try funcs.venv();
-    try funcs.date();
-    try funcs.user();
-    try funcs.at();
-    try funcs.host();
-    try funcs.sep();
-    try funcs.path();
-    try funcs.repo();
-    try funcs.jobs();
-    try funcs.direnv();
+    if (funcs.parseZero(os.getenv("PROMPT_BARE")) == 0) {
+        try funcs.prefix();
+        try funcs.script();
+        try funcs.tab();
+        try funcs.screen();
+        try funcs.venv();
+        try funcs.date();
+
+        var show_sep = false;
+
+        // showing the host (and user, if not su/root) is unnecessary if local
+        if (funcs.is_root() or funcs.is_su() or long) {
+            show_sep = true;
+            try funcs.user();
+        }
+
+        if (!funcs.is_local() or long) {
+            show_sep = true;
+            try funcs.at();
+            try funcs.host();
+        }
+
+        // if no user or host, remove sep too
+        if (show_sep) {
+            try funcs.sep();
+        }
+
+        try funcs.path();
+        try funcs.repo();
+        try funcs.jobs();
+        try funcs.direnv();
+    }
     try funcs.char();
-
-    // const fs = .{
-    //     "prefix", "script", "tab",  "screen", "venv", "date",   "user", "at",
-    //     "host",   "sep",    "path", "repo",   "jobs", "direnv", "char",
-    // };
-    // inline for (fs) |f| {
-    //     try funcmap.putNoClobber(f, &@field(funcs, f));
-    // }
-    // filter(&funcmap);
-    // inline for (fs) |f| {
-    //     if (funcmap.get(f)) |func| {
-    //         // https://github.com/ziglang/zig/issues/4639
-    //         try @call(.{}, func.*, .{});
-    //     }
-    // }
 }
