@@ -65,8 +65,8 @@ pub var SUSPENDED: u16 = undefined;
 //!
 //!  $PROMPT_JOBS
 //!    set to "{running} {suspended}" jobs (separated by space, defaults to 0 0)
-//!    for zsh:
-//!    export PROMPT_JOBS="$(jobs | PERL_SKIP_LOCALE_INIT=1 perl -ne 'BEGIN{%c=qw(r 0 s 0)}$c{lc $1}++ if /^\[\d+\]\s*[+-]?\s*(\w)/i;END{print "@c{qw(r s)}"}')"
+//!    for zsh: (https://unix.stackexchange.com/a/68635)
+//!    export PROMPT_JOBS=${(M)#${jobstates%%:*}:#running} ${(M)#${jobstates%%:*}:#suspended}
 
 pub fn main() !void {
     // allocator setup
