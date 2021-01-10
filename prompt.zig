@@ -35,11 +35,9 @@ pub const C = .{
     .white = "\x1b[37m",
 };
 
-pub var A: *Allocator = undefined; // allocator
-pub var E: Escapes = undefined; // escapes
-pub var CWD: []u8 = undefined; // colors
-pub var RUNNING: u16 = undefined;
-pub var SUSPENDED: u16 = undefined;
+pub var A: *Allocator = undefined;
+pub var E: Escapes = undefined;
+pub var CWD: []u8 = undefined;
 
 //!  Configurable environment variables:
 //!
@@ -84,9 +82,9 @@ pub fn main() !void {
     // state
     var buf: [std.fs.MAX_PATH_BYTES]u8 = undefined;
     CWD = try std.os.getcwd(&buf);
-
     const long = funcs.parseZero(os.getenv("PROMPT_LONG")) != 0;
 
+    // print prompt
     if (funcs.parseZero(os.getenv("PROMPT_BARE")) == 0) {
         try funcs.prefix();
         try funcs.script();
