@@ -75,6 +75,8 @@ pub fn main() !void {
     // escapes
     if (std.os.isatty(1)) {
         E = Escapes.init("", ""); // interactive
+        const c = @cImport(@cInclude("stdlib.h"));
+        _ = c.unsetenv("SHELL"); // force 'interactive' for subprograms
     } else {
         E = Escapes.init("%{", "%}"); // zsh
     }
