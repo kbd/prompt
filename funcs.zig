@@ -36,9 +36,14 @@ pub fn is_root() bool {
 }
 
 fn run(argv: []const []const u8) ![]const u8 {
+    var envmap = try std.process.getEnvMap(prompt.A);
+    if (prompt.INTERACTIVE) {
+        envmap.delete("SHELL");
+    }
     const result = try std.ChildProcess.exec(.{
         .allocator = prompt.A,
         .argv = argv,
+        .env_map = &envmap,
     });
     return std.mem.trim(u8, result.stdout, " \n");
 }

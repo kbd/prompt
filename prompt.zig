@@ -38,6 +38,7 @@ pub const C = .{
 pub var A: *Allocator = undefined;
 pub var E: Escapes = undefined;
 pub var CWD: []u8 = undefined;
+pub var INTERACTIVE: bool = false;
 
 //!  Configurable environment variables:
 //!
@@ -78,8 +79,7 @@ pub fn main() !void {
     const called_directly = std.os.isatty(1);
     if (called_directly or !is_zsh) {
         E = Escapes.init("", ""); // interactive
-        const c = @cImport(@cInclude("stdlib.h"));
-        _ = c.unsetenv("SHELL"); // force 'interactive' for subprograms
+        INTERACTIVE = true;
     } else {
         E = Escapes.init("%{", "%}"); // zsh
     }
