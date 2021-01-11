@@ -77,7 +77,7 @@ pub fn screen() !void {
     var name: []const u8 = undefined;
     var window: []const u8 = undefined;
 
-    if (std.mem.eql(u8, term[0..6], "screen")) {
+    if (!std.mem.eql(u8, term, "") and std.mem.eql(u8, term[0..6], "screen")) {
         // figure out whether 'screen' or 'tmux'
         if (!std.mem.eql(u8, tmux, "")) {
             scr = "tmux";
