@@ -64,7 +64,7 @@ pub var CWD: []u8 = undefined;
 //!  $PROMPT_JOBS
 //!    set to "{running} {suspended}" jobs (separated by space, defaults to 0 0)
 //!    for zsh: (https://unix.stackexchange.com/a/68635)
-//!    export PROMPT_JOBS=${(M)#${jobstates%%:*}:#running} ${(M)#${jobstates%%:*}:#suspended}
+//!    export PROMPT_JOBS=${(M)#${jobstates%%:*}:#running}\ ${(M)#${jobstates%%:*}:#suspended}
 
 pub fn main() !void {
     // allocator setup
