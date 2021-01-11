@@ -73,7 +73,10 @@ pub fn main() !void {
     A = &arena.allocator;
 
     // escapes
-    if (std.os.isatty(1)) {
+    const shell = os.getenv("SHELL") orelse "";
+    const is_zsh = std.mem.indexOf(u8, shell, "zsh") != null;
+    const called_directly = std.os.isatty(1);
+    if (called_directly or !is_zsh) {
         E = Escapes.init("", ""); // interactive
         const c = @cImport(@cInclude("stdlib.h"));
         _ = c.unsetenv("SHELL"); // force 'interactive' for subprograms
