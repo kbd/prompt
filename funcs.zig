@@ -13,8 +13,22 @@ fn is_remote() bool {
     return tty != null or client != null;
 }
 
+fn access(pth: []const u8, flags: std.fs.File.OpenFlags) !void {
+    try std.fs.cwd().access(pth, flags);
+}
+
+fn fileExists(pth: []const u8) bool {
+    access(pth, .{}) catch return false;
+    return true;
+}
+
+fn is_writeable(pth: []const u8) bool {
+    access(pth, .{ .write = true }) catch return false;
+    return true;
+}
+
 fn is_docker() bool {
-    return false; // [[ -f '/.dockerenv' ]];
+    return fileExists("/.dockerenv");
 }
 
 fn is_not_local() bool {
@@ -145,20 +159,22 @@ pub fn host() !void {
     try print("{}{}{}{}{}{}{}", .{ E.o, C.blue, E.c, h, E.o, C.reset, E.c });
 }
 
+/// separator - C.red if cwd unwritable
 pub fn sep() !void {
-    // separator - C.red if cwd unwritable
-    var s = ":";
-    //   if [[ ! -w "${PWD}" ]]; then
-    //     s="$eo${COL[C.red]}${COL[bold]}$ec$s$eo${COL[C.reset]}$ec"
-    //   fi
-    try print("{}", .{s});
+    try print(":", .{});
 }
 
 pub fn path() !void {
     const E = prompt.E;
-    const p = os.getenv("PROMPT_PATH") orelse prompt.CWD;
+    const cwd = prompt.CWD;
 
-    try print("{}{}{}{}{}{}{}{}", .{ E.o, C.bold, C.magenta, E.c, p, E.o, C.reset, E.c });
+    var color = try fmt.allocPrint(prompt.A, "{}{}", .{ C.magenta, C.bold });
+    if (!is_writeable(cwd)) {
+        color = try fmt.allocPrint(prompt.A, "{}{}", .{ color, C.underline });
+    }
+
+    const p = os.getenv("PROMPT_PATH") orelse cwd;
+    try print("{}{}{}{}{}{}{}", .{ E.o, color, E.c, p, E.o, C.reset, E.c });
 }
 
 // source control information in prompt
