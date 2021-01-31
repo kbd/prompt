@@ -33,6 +33,15 @@ pub const C = .{
     .magenta = "\x1b[35m",
     .cyan = "\x1b[36m",
     .white = "\x1b[37m",
+
+    .bright_black = "\x1b[90m",
+    .bright_red = "\x1b[91m",
+    .bright_green = "\x1b[92m",
+    .bright_yellow = "\x1b[99m",
+    .bright_blue = "\x1b[94m",
+    .bright_magenta = "\x1b[95m",
+    .bright_cyan = "\x1b[96m",
+    .bright_white = "\x1b[97m",
 };
 
 pub var A: *Allocator = undefined;

@@ -168,7 +168,7 @@ pub fn path() !void {
     const E = prompt.E;
     const cwd = prompt.CWD;
 
-    var color = try fmt.allocPrint(prompt.A, "{}{}", .{ C.magenta, C.bold });
+    var color = try fmt.allocPrint(prompt.A, "{}{}", .{ C.bright_magenta, C.bold });
     if (!is_writeable(cwd)) {
         color = try fmt.allocPrint(prompt.A, "{}{}", .{ color, C.underline });
     }
