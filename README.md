@@ -37,16 +37,17 @@ Configurable environment variables:
       for zsh: (https://unix.stackexchange.com/a/68635)
       export PROMPT_JOBS=${(M)#${jobstates%%:*}:#running}\ ${(M)#${jobstates%%:*}:#suspended}
 
-Here's an example of how I set those in my Zsh config:
+## Configuration
+
+Here's how to set the prompt in a Zsh config, taking advantage of some of the above options:
 
 ```zsh
-alias tabtitle='printf "\e]1;%s\a"'
-tt() { TABTITLE="$@"; }
-
+alias title='printf "\e]0;%s\a"' # set window title
+PROMPT='$(prompt)'
 precmd() {
   export PROMPT_RETURN_CODE=$?
   export PROMPT_JOBS=${(M)#${jobstates%%:*}:#running}\ ${(M)#${jobstates%%:*}:#suspended}
   export PROMPT_PATH="$(print -P '%~')"
-  tabtitle "$PROMPT_PATH${TABTITLE:+" — $TABTITLE"}"
+  title "$PROMPT_PATH"
 }
 ```
