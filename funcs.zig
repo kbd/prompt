@@ -40,7 +40,9 @@ pub fn is_local() bool {
 }
 
 pub fn is_su() bool {
-    return !std.mem.eql(u8, os.getenv("USER").?, os.getenv("LOGNAME").?);
+    var usr = os.getenv("USER") orelse "";
+    var logname = os.getenv("LOGNAME") orelse "";
+    return !std.mem.eql(u8, usr, logname);
 }
 
 pub fn is_root() bool {
@@ -62,27 +64,23 @@ pub fn prefix() !void {
     try print("{}", .{p});
 }
 
+// report if the session is being recorded
 pub fn script() !void {
     const E = prompt.E;
-
-    // report if the session is being recorded
-    var s = os.getenv("SCRIPT") orelse "";
-    if (!std.mem.eql(u8, s, "")) {
+    if (os.getenv("SCRIPT")) |s| {
         try print("{}{}{}{}{}{}{}", .{ E.o, C.white, E.c, s, E.o, C.reset, E.c });
     }
 }
 
-// # tab - https://github.com/austinjones/tab-rs
+// tab - https://github.com/austinjones/tab-rs
 pub fn tab() !void {
     const E = prompt.E;
-
-    var t = os.getenv("TAB") orelse "";
-    if (!std.mem.eql(u8, t, "")) {
+    if (os.getenv("TAB")) |t| {
         try print("[{}{}{}{}{}{}{}]", .{ E.o, C.green, E.c, t, E.o, C.reset, E.c });
     }
 }
 
-// # screen/tmux status in prompt
+// screen/tmux status
 pub fn screen() !void {
     const E = prompt.E;
     const term = os.getenv("TERM") orelse "";
@@ -115,8 +113,7 @@ pub fn venv() !void {
     // example environment variable set in a venv:
     // VIRTUAL_ENV=/Users/kbd/.local/share/virtualenvs/pipenvtest-vxNzUMMM
     const E = prompt.E;
-    var v = os.getenv("VIRTUAL_ENV") orelse "";
-    if (!std.mem.eql(u8, v, "")) {
+    if (os.getenv("VIRTUAL_ENV")) |v| {
         var name = std.fs.path.basename(v);
         try print("[{}{}{}{}{}{}{}{}]", .{ E.o, C.green, E.c, "🐍", name, E.o, C.reset, E.c });
     }
@@ -177,7 +174,7 @@ pub fn path() !void {
     try print("{}{}{}{}{}{}{}", .{ E.o, color, E.c, p, E.o, C.reset, E.c });
 }
 
-// source control information in prompt
+// source control information
 pub fn repo() !void {
     // try to run repo_status and get its output. If it can't be run, show nothing.
     const repostr = try run(&[_][]const u8{"repo_status"});
@@ -221,9 +218,7 @@ pub fn jobs() !void {
 
 pub fn direnv() !void {
     const E = prompt.E;
-
-    var d = os.getenv("DIRENV_DIR");
-    if (d != null) {
+    if (os.getenv("DIRENV_DIR")) |d| {
         try print("{}{}{}{}{}{}{}", .{ E.o, C.blue, E.c, "‡", E.o, C.reset, E.c });
     }
 }
