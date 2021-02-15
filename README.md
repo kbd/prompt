@@ -43,7 +43,7 @@ Here's how to set the prompt in a Zsh config, taking advantage of some of the ab
 
 ```zsh
 alias title='printf "\e]0;%s\a"' # set window title
-PROMPT='$(prompt)'
+PROMPT='$(prompt zsh)'
 precmd() {
   export PROMPT_RETURN_CODE=$?
   export PROMPT_JOBS=${(M)#${jobstates%%:*}:#running}\ ${(M)#${jobstates%%:*}:#suspended}
