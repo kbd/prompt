@@ -14,6 +14,12 @@ pub const Escapes = struct {
     }
 };
 
+const Shell = enum {
+    zsh,
+    bash,
+    unknown,
+};
+
 pub const C = .{
     .reset = "\x1b[00m",
     .bold = "\x1b[01m",
@@ -81,16 +87,25 @@ pub fn main() !void {
     defer arena.deinit();
     A = &arena.allocator;
 
-    // escapes
-    const shell = os.getenv("SHELL") orelse "";
-    const is_zsh = std.mem.indexOf(u8, shell, "zsh") != null;
-    const called_directly = std.os.isatty(1);
-    if (called_directly or !is_zsh) {
-        E = Escapes.init("", ""); // interactive
-        const c = @cImport(@cInclude("stdlib.h"));
-        _ = c.unsetenv("SHELL"); // force 'interactive' for subprograms
-    } else {
-        E = Escapes.init("%{", "%}"); // zsh
+    // get the specified shell and initialize escape codes
+    var shell = Shell.unknown;
+    if (std.mem.len(os.argv) > 1) {
+        var arg = std.mem.spanZ(os.argv[1]);
+        if (std.mem.eql(u8, arg, "zsh")) {
+            shell = Shell.zsh;
+        } else if((std.mem.eql(u8, arg, "bash"))) {
+            shell = Shell.bash;
+        }
+    }
+
+    switch (shell) {
+        .zsh => { E = Escapes.init("%{", "%}"); },
+        .bash => { E = Escapes.init("\\[", "\\]"); },
+        else => {
+            E = Escapes.init("", "");
+            const c = @cImport(@cInclude("stdlib.h"));
+            _ = c.unsetenv("SHELL"); // force 'interactive' for subprograms
+        }
     }
 
     // state
