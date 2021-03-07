@@ -4,6 +4,7 @@ const print = stdout.print;
 const prompt = @import("prompt.zig");
 const os = std.os;
 const fmt = std.fmt;
+const repo_status = @import("repo_status/repo_status.zig");
 
 const C = prompt.C;
 
@@ -176,11 +177,19 @@ pub fn path() !void {
 
 // source control information
 pub fn repo() !void {
-    // try to run repo_status and get its output. If it can't be run, show nothing.
-    const repostr = try run(&[_][]const u8{"repo_status"});
-    if (!std.mem.eql(u8, repostr, "")) {
-        try print("[{}]", .{repostr});
-    }
+    const E = prompt.E;
+    const cwd = prompt.CWD;
+    repo_status.A = prompt.A; // use my allocator
+
+    if (!repo_status.isGitRepo(cwd))
+        return;
+
+    try print("[", .{});
+    var status = try repo_status.getFullRepoStatus(cwd);
+    // convert to repo_status's version of Escapes, unify in library later
+    var escapes = repo_status.Escapes.init(E.o, E.c);
+    try repo_status.writeStatusStr(escapes, status);
+    try print("]", .{});
 }
 
 pub inline fn parseZero(val: ?[]const u8) u32 {

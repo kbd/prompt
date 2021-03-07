@@ -1,0 +1,3 @@
+[submodule "repo_status"]
+	path = repo_status
+	url = https://github.com/kbd/repo_status
