@@ -115,8 +115,13 @@ pub fn venv() !void {
     // VIRTUAL_ENV=/Users/kbd/.local/share/virtualenvs/pipenvtest-vxNzUMMM
     const E = prompt.E;
     if (os.getenv("VIRTUAL_ENV")) |v| {
-        var name = std.fs.path.basename(v);
-        try print("[{}{}{}{}{}{}{}{}]", .{ E.o, C.green, E.c, "🐍", name, E.o, C.reset, E.c });
+        const show_full_venv = parseZero(os.getenv("PROMPT_FULL_VENV")) != 0;
+        if (show_full_venv) {
+            var name = std.fs.path.basename(v);
+            try print("[{}{}{}{}{}{}{}{}]", .{ E.o, C.green, E.c, "🐍", name, E.o, C.reset, E.c });
+        } else {
+            try print("🐍", .{});
+        }
     }
 }
 

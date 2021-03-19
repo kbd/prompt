@@ -37,6 +37,9 @@ Configurable environment variables:
       for zsh: (https://unix.stackexchange.com/a/68635)
       export PROMPT_JOBS=${(M)#${jobstates%%:*}:#running}\ ${(M)#${jobstates%%:*}:#suspended}
 
+    $PROMPT_FULL_VENV
+      set to show the full name of virtualenvs vs an indicator
+
 ## Configuration
 
 Here's how to set the prompt in a Zsh config, taking advantage of some of the above options:

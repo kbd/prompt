@@ -80,6 +80,9 @@ pub var CWD: []u8 = undefined;
 //!    set to "{running} {suspended}" jobs (separated by space, defaults to 0 0)
 //!    for zsh: (https://unix.stackexchange.com/a/68635)
 //!    export PROMPT_JOBS=${(M)#${jobstates%%:*}:#running}\ ${(M)#${jobstates%%:*}:#suspended}
+//!
+//!  $PROMPT_FULL_VENV
+//!    set to show the full name of virtualenvs vs an indicator
 
 pub fn main() !void {
     // allocator setup
@@ -93,19 +96,23 @@ pub fn main() !void {
         var arg = std.mem.spanZ(os.argv[1]);
         if (std.mem.eql(u8, arg, "zsh")) {
             shell = Shell.zsh;
-        } else if((std.mem.eql(u8, arg, "bash"))) {
+        } else if ((std.mem.eql(u8, arg, "bash"))) {
             shell = Shell.bash;
         }
     }
 
     switch (shell) {
-        .zsh => { E = Escapes.init("%{", "%}"); },
-        .bash => { E = Escapes.init("\\[", "\\]"); },
+        .zsh => {
+            E = Escapes.init("%{", "%}");
+        },
+        .bash => {
+            E = Escapes.init("\\[", "\\]");
+        },
         else => {
             E = Escapes.init("", "");
             const c = @cImport(@cInclude("stdlib.h"));
             _ = c.unsetenv("SHELL"); // force 'interactive' for subprograms
-        }
+        },
     }
 
     // state
