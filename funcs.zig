@@ -109,14 +109,17 @@ pub fn screen() !void {
     }
 }
 
+pub inline fn is_env_true(env_name: []const u8) bool {
+    return parseZero(os.getenv(env_name)) != 0;
+}
+
 // virtual env
 pub fn venv() !void {
     // example environment variable set in a venv:
     // VIRTUAL_ENV=/Users/kbd/.local/share/virtualenvs/pipenvtest-vxNzUMMM
     const E = prompt.E;
     if (os.getenv("VIRTUAL_ENV")) |v| {
-        const show_full_venv = parseZero(os.getenv("PROMPT_FULL_VENV")) != 0;
-        if (show_full_venv) {
+        if (is_env_true("PROMPT_FULL_VENV")) {
             var name = std.fs.path.basename(v);
             try print("[{}{}{}{}{}{}{}{}]", .{ E.o, C.green, E.c, "🐍", name, E.o, C.reset, E.c });
         } else {
@@ -151,12 +154,10 @@ pub fn at() !void {
 
 pub fn host() !void {
     const E = prompt.E;
-
-    const show_full_host = parseZero(os.getenv("PROMPT_FULL_HOST")) != 0;
     var buf: [os.HOST_NAME_MAX]u8 = undefined;
     _ = std.heap.FixedBufferAllocator.init(&buf);
     var h: []const u8 = try os.gethostname(&buf);
-    if (!show_full_host) {
+    if (!is_env_true("PROMPT_FULL_HOST")) {
         h = std.mem.split(h, ".").next().?;
     }
     try print("{}{}{}{}{}{}{}", .{ E.o, C.blue, E.c, h, E.o, C.reset, E.c });
@@ -248,4 +249,10 @@ pub fn char() !void {
         try print("{}{}{}{}:{}", .{ E.o, C.red, E.c, c, code });
     }
     try print("{}{}{} ", .{ E.o, C.reset, E.c });
+}
+
+pub fn newline_if(env_name: []const u8) !void {
+    if (is_env_true(env_name)) {
+        try print("\n", .{});
+    }
 }

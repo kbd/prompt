@@ -83,6 +83,9 @@ pub var CWD: []u8 = undefined;
 //!
 //!  $PROMPT_FULL_VENV
 //!    set to show the full name of virtualenvs vs an indicator
+//!
+//!  $PROMPT_LINE_BEFORE, $PROMPT_LINE_AFTER
+//!    set for a multiline prompt. if set, add newline before/after each prompt
 
 pub fn main() !void {
     // allocator setup
@@ -118,10 +121,11 @@ pub fn main() !void {
     // state
     var buf: [std.fs.MAX_PATH_BYTES]u8 = undefined;
     CWD = try std.os.getcwd(&buf);
-    const long = funcs.parseZero(os.getenv("PROMPT_LONG")) != 0;
+    const long = funcs.is_env_true("PROMPT_LONG");
 
     // print prompt
-    if (funcs.parseZero(os.getenv("PROMPT_BARE")) == 0) {
+    if (!funcs.is_env_true("PROMPT_BARE")) {
+        try funcs.newline_if("PROMPT_LINE_BEFORE");
         try funcs.prefix();
         try funcs.script();
         try funcs.tab();
@@ -152,6 +156,7 @@ pub fn main() !void {
         try funcs.repo();
         try funcs.jobs();
         try funcs.direnv();
+        try funcs.newline_if("PROMPT_LINE_AFTER");
     }
     try funcs.char();
 }

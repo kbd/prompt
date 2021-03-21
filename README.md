@@ -40,6 +40,9 @@ Configurable environment variables:
     $PROMPT_FULL_VENV
       set to show the full name of virtualenvs vs an indicator
 
+    $PROMPT_LINE_BEFORE, $PROMPT_LINE_AFTER
+      set for a multiline prompt, if set, add newline before/after the prompt
+
 ## Configuration
 
 Here's how to set the prompt in a Zsh config, taking advantage of some of the above options:
