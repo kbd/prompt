@@ -2,6 +2,24 @@
 
 Customizable prompt for unix shells
 
+## Description / Goals / Status
+
+The command line is the fundamental interface to the computer. The prompt is the
+status you see before every command you run.
+
+The prompt should:
+
+- display as fast as possible
+- give you desired context for your command
+- be portable, not tied to a particular shell
+
+I use this prompt as my daily driver. The code is "done" but I'm always open to
+suggestions. TBD: include a screencast in this readme.
+
+This project depends on my other project,
+[repo_status](https://github.com/kbd/repo_status) to print source control status
+in the prompt.
+
 ## build instructions
 
 ```
