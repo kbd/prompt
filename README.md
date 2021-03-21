@@ -22,9 +22,13 @@ in the prompt.
 
 ## build instructions
 
+Requires the Zig programming language to build:
+
 ```
 $ zig build-exe -OReleaseFast prompt.zig
 ```
+
+That creates a binary named `prompt`, which I put in `~/bin` so it's in my path.
 
 ## Settings
 
