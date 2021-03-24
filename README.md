@@ -47,32 +47,40 @@ That creates a binary named `prompt`. I put in `~/bin` so it's in my path.
 
 Configurable environment variables:
 
-```bash
-$PROMPT_PREFIX - prefix prompt with this text. default: ⚡
+```
+$PROMPT_PREFIX
+  prefix prompt with this text. default: ⚡
 
-$PROMPT_BARE - set to enable a very minimal prompt. "zen mode"
-  # I use the following alias to toggle:
-  # alias pb='[[ $PROMPT_BARE ]] && unset PROMPT_BARE || export PROMPT_BARE=1'
+$PROMPT_BARE
+  set to enable a very minimal prompt. "zen mode"
+  I use the following alias to toggle:
+  alias pb='[[ $PROMPT_BARE ]] && unset PROMPT_BARE || export PROMPT_BARE=1'
 
-$PROMPT_LONG - display username@host even if local
+$PROMPT_LONG
+  display username@host even if local
 
-$PROMPT_FULL_HOST - if set, shows the full hostname (bash: \H \h -- zsh: %M %m)
+$PROMPT_FULL_HOST
+  if set, shows the full hostname (bash: \H \h -- zsh: %M %m)
 
-$PROMPT_PATH - show this for the path, overriding the cwd
-  # this enables you to use Zsh's hashed paths:
-  # export PROMPT_PATH="$(print -P '%~')"
+$PROMPT_PATH
+  show this for the path, overriding the cwd
+  this enables you to use Zsh's hashed paths:
+  export PROMPT_PATH="$(print -P '%~')"
 
-$PROMPT_RETURN_CODE - set to show the exit code of the previous program if != 0
-  # export PROMPT_RETURN_CODE=$?
+$PROMPT_RETURN_CODE
+  set to show the exit code of the previous program if != 0
+  export PROMPT_RETURN_CODE=$?
 
-$PROMPT_JOBS - set to "{running} {suspended}" jobs, defaults to "0 0"
-  # for zsh: (https://unix.stackexchange.com/a/68635)
-  # export PROMPT_JOBS=${(M)#${jobstates%%:*}:#running}\ ${(M)#${jobstates%%:*}:#suspended}
+$PROMPT_JOBS
+  set to "{running} {suspended}" jobs, defaults to "0 0"
+  for zsh: (https://unix.stackexchange.com/a/68635)
+  export PROMPT_JOBS=${(M)#${jobstates%%:*}:#running}\ ${(M)#${jobstates%%:*}:#suspended}
 
-$PROMPT_FULL_VENV - set to show the full name of virtualenvs, vs an indicator
+$PROMPT_FULL_VENV
+  set to show the full name of virtualenvs, vs an indicator
 
-$PROMPT_LINE_BEFORE, $PROMPT_LINE_AFTER - add newline before/after prompt
-  # enables a configurable multi-line prompt
+$PROMPT_LINE_BEFORE, $PROMPT_LINE_AFTER
+  add newline before/after prompt, this enables a multi-line prompt
 ```
 
 ## Configuration
