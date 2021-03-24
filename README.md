@@ -85,7 +85,9 @@ $PROMPT_LINE_BEFORE, $PROMPT_LINE_AFTER
 
 ## Configuration
 
-Here's how to set the prompt in a Zsh config, taking advantage of some of the above options:
+### Zsh
+
+in .zshrc:
 
 ```zsh
 alias title='printf "\e]0;%s\a"' # set window title
@@ -96,4 +98,30 @@ precmd() {
   export PROMPT_PATH="$(print -P '%~')"
   title "$PROMPT_PATH"
 }
+```
+
+### Bash
+
+TBD
+
+### Nu shell
+
+in config.toml:
+
+```
+prompt = "echo $(prompt)"
+```
+
+### Xonsh
+
+in .xonshrc:
+
+```
+# prompt
+def prmpt():
+  # $PROMPT_RETURN_CODE = __xonsh__.history.last_cmd_rtn  # always zero?
+  $PROMPT_PATH = "{short_cwd}"
+  return $(prompt)
+
+$PROMPT = prmpt
 ```
