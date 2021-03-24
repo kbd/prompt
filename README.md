@@ -7,19 +7,17 @@ Customizable prompt for unix shells
 A command line is a fundamental interface to a computer. The prompt is the
 status the computer shows the human after each command.
 
-## Goals
-
 The prompt should:
 
 - display as fast as possible
-- give the human desired context for next command
+- give the human desired context for the next command
 - be portable, not tied to a particular shell
-
-##  Status
 
 I use this prompt as my daily driver. The code is basically "done", but I'm always open to suggestions.
 
-Here are a couple screenshots. First, a simple prompt:
+## Screenshots
+
+Here are screenshots. First, a simple prompt:
 
 ![simple prompt](../media/short.png?raw=true)
 
