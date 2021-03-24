@@ -31,6 +31,8 @@ Here's an example of job control and return code features. This prompt has prefi
 
 This project depends on my other project, [repo_status](https://github.com/kbd/repo_status), to print source control status in the prompt.
 
+Because I always wonder these things: the screenshots are in [Kitty terminal](https://sw.kovidgoyal.net/kitty/) using [Fantasque Sans Mono](https://github.com/belluzj/fantasque-sans). All [my system config](https://github.com/kbd/setup) is open source if you're interested.
+
 ## Build instructions
 
 Requires the Zig programming language to build:
