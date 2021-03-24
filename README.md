@@ -14,7 +14,16 @@ The prompt should:
 - be portable, not tied to a particular shell
 
 I use this prompt as my daily driver. The code is "done" but I'm always open to
-suggestions. TBD: include a screencast in this readme.
+suggestions.
+
+Here are a couple screenshots. First, a simple prompt:
+
+![simple prompt](../media/short.png?raw=true)
+
+Next, a more complex prompt, in a tmux session, with a virtualenv and direnv
+active, in a git repository with changes, staged files, etc.
+
+![complex prompt](../media/long.png?raw=true)
 
 This project depends on my other project,
 [repo_status](https://github.com/kbd/repo_status) to print source control status
