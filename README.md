@@ -21,7 +21,7 @@ Here are screenshots. First, a simple prompt:
 
 ![simple prompt](../media/short.png?raw=true)
 
-Next, a more complex prompt, in a tmux session, with an active virtualenv, showing the user and host, in a git repository on 'my-branch' with a few files of different statuses, and finally indicating an active `direnv`.
+Next, a more complex prompt, in a tmux session, with an active virtualenv, showing the user and host, in a git repository on 'my-branch' with a few files of different statuses, and finally indicating an active [direnv](https://direnv.net/).
 
 ![complex prompt](../media/long.png?raw=true)
 
