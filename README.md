@@ -20,16 +20,17 @@ Here are a couple screenshots. First, a simple prompt:
 
 ![simple prompt](../media/short.png?raw=true)
 
-Next, a more complex prompt, in a tmux session, with a virtualenv and direnv
-active, in a git repository with changes, staged files, etc.
+Next, a more complex prompt, in a tmux session, with an active virtualenv, showing the user and host, in a git repository on 'my-branch' with a few files of different statuses, and finally indicating an active `direnv`.
 
 ![complex prompt](../media/long.png?raw=true)
 
-This project depends on my other project,
-[repo_status](https://github.com/kbd/repo_status) to print source control status
-in the prompt.
+Here's an example of job control and return code features. This prompt has prefix disabled:
 
-## build instructions
+![job control](../media/jobs.png?raw=true)
+
+This project depends on my other project, [repo_status](https://github.com/kbd/repo_status), to print source control status in the prompt.
+
+## Build instructions
 
 Requires the Zig programming language to build:
 
