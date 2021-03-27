@@ -49,7 +49,7 @@ Configurable environment variables:
 
 ```
 $PROMPT_PREFIX
-  prefix prompt with this text. default: ⚡
+  prefix prompt with this text
 
 $PROMPT_BARE
   set to enable a very minimal prompt. "zen mode"

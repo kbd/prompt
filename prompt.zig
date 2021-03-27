@@ -56,7 +56,7 @@ pub var CWD: []u8 = undefined;
 
 //!  Configurable environment variables:
 //!
-//!  $PROMPT_PREFIX - default ⚡
+//!  $PROMPT_PREFIX
 //!    override to control what's displayed at the start of the prompt line
 //!
 //!  $PROMPT_BARE

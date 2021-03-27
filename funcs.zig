@@ -61,7 +61,7 @@ fn run(argv: []const []const u8) ![]const u8 {
 }
 
 pub fn prefix() !void {
-    var p = os.getenv("PROMPT_PREFIX") orelse "⚡";
+    var p = os.getenv("PROMPT_PREFIX") orelse "";
     try print("{}", .{p});
 }
 
