@@ -105,7 +105,10 @@ precmd() {
 in .bashrc
 
 ```bash
-PROMPT_COMMAND='PS1="$(PROMPT_RETURN_CODE=$? PROMPT_PATH="\w" prompt bash)"'
+jobscount() {
+  echo "$(jobs -rp | wc -l | tr -d ' ') $(jobs -sp | wc -l | tr -d ' ')"
+}
+PROMPT_COMMAND='PS1="$(PROMPT_RETURN_CODE=$? PROMPT_PATH="\w" PROMPT_JOBS="$(jobscount)" prompt bash)"'
 ```
 
 ### Nu shell
