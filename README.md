@@ -102,7 +102,11 @@ precmd() {
 
 ### Bash
 
-TBD
+in .bashrc
+
+```bash
+PROMPT_COMMAND='PS1="$(PROMPT_RETURN_CODE=$? PROMPT_PATH="\w" prompt bash)"'
+```
 
 ### Nu shell
 
@@ -116,7 +120,7 @@ prompt = "echo $(prompt)"
 
 in .xonshrc:
 
-```
+```python
 # prompt
 def prmpt():
   # $PROMPT_RETURN_CODE = __xonsh__.history.last_cmd_rtn  # always zero?
