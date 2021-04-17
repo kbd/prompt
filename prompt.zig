@@ -124,8 +124,8 @@ pub fn main() !void {
     const long = funcs.is_env_true("PROMPT_LONG");
 
     // print prompt
+    try funcs.newline_if("PROMPT_LINE_BEFORE");
     if (!funcs.is_env_true("PROMPT_BARE")) {
-        try funcs.newline_if("PROMPT_LINE_BEFORE");
         try funcs.prefix();
         try funcs.script();
         try funcs.tab();
