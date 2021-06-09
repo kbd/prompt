@@ -1,3 +1,36 @@
+//!  Configurable environment variables:
+//!
+//!  $PROMPT_PREFIX
+//!    override to control what's displayed at the start of the prompt line
+//!
+//!  $PROMPT_BARE
+//!    set to enable a very minimal prompt
+//!
+//!  $PROMPT_FULL_HOST
+//!    shows the full hostname (bash: \H \h -- zsh: %M %m)
+//!
+//!  $PROMPT_LONG
+//!    display username@host even if local
+//!
+//!  $PROMPT_PATH
+//!    set to use things like Zsh's hashed paths
+//!    export PROMPT_PATH="$(print -P '%~')"
+//!
+//!  $PROMPT_RETURN_CODE
+//!    set to display the exit code of the previous program
+//!    export PROMPT_RETURN_CODE=$?
+//!
+//!  $PROMPT_JOBS
+//!    set to "{running} {suspended}" jobs (separated by space, defaults to 0 0)
+//!    for zsh: (https://unix.stackexchange.com/a/68635)
+//!    export PROMPT_JOBS=${(M)#${jobstates%%:*}:#running}\ ${(M)#${jobstates%%:*}:#suspended}
+//!
+//!  $PROMPT_FULL_VENV
+//!    set to show the full name of virtualenvs vs an indicator
+//!
+//!  $PROMPT_LINE_BEFORE, $PROMPT_LINE_AFTER
+//!    set for a multiline prompt. if set, add newline before/after each prompt
+
 const std = @import("std");
 const stdout = std.io.getStdOut().writer();
 const print = stdout.print;
@@ -53,39 +86,6 @@ pub const C = .{
 pub var A: *Allocator = undefined;
 pub var E: Escapes = undefined;
 pub var CWD: []u8 = undefined;
-
-//!  Configurable environment variables:
-//!
-//!  $PROMPT_PREFIX
-//!    override to control what's displayed at the start of the prompt line
-//!
-//!  $PROMPT_BARE
-//!    set to enable a very minimal prompt
-//!
-//!  $PROMPT_FULL_HOST
-//!    shows the full hostname (bash: \H \h -- zsh: %M %m)
-//!
-//!  $PROMPT_LONG
-//!    display username@host even if local
-//!
-//!  $PROMPT_PATH
-//!    set to use things like Zsh's hashed paths
-//!    export PROMPT_PATH="$(print -P '%~')"
-//!
-//!  $PROMPT_RETURN_CODE
-//!    set to display the exit code of the previous program
-//!    export PROMPT_RETURN_CODE=$?
-//!
-//!  $PROMPT_JOBS
-//!    set to "{running} {suspended}" jobs (separated by space, defaults to 0 0)
-//!    for zsh: (https://unix.stackexchange.com/a/68635)
-//!    export PROMPT_JOBS=${(M)#${jobstates%%:*}:#running}\ ${(M)#${jobstates%%:*}:#suspended}
-//!
-//!  $PROMPT_FULL_VENV
-//!    set to show the full name of virtualenvs vs an indicator
-//!
-//!  $PROMPT_LINE_BEFORE, $PROMPT_LINE_AFTER
-//!    set for a multiline prompt. if set, add newline before/after each prompt
 
 pub fn main() !void {
     // allocator setup
