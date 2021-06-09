@@ -170,9 +170,7 @@ pub fn sep() !void {
 
 /// horizortal rule
 pub fn hr() !void {
-    var w: std.c.winsize = undefined;
-    _ = std.c.ioctl(std.c.STDOUT_FILENO, std.c.TIOCGWINSZ, &w);
-    var columns = w.ws_col;
+    var columns = parseZero(os.getenv("PROMPT_HR"));
     while (columns > 0) {
         try print("─", .{});
         columns -= 1;
