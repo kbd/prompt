@@ -30,6 +30,9 @@
 //!
 //!  $PROMPT_LINE_BEFORE, $PROMPT_LINE_AFTER
 //!    set for a multiline prompt. if set, add newline before/after each prompt
+//!
+//!  $PROMPT_HR
+//!    set to print a horizontal rule before each prompt line
 
 const std = @import("std");
 const stdout = std.io.getStdOut().writer();
@@ -125,6 +128,9 @@ pub fn main() !void {
 
     // print prompt
     try funcs.newline_if("PROMPT_LINE_BEFORE");
+    if (funcs.is_env_true("PROMPT_HR")) {
+        try funcs.hr();
+    }
     if (!funcs.is_env_true("PROMPT_BARE")) {
         try funcs.prefix();
         try funcs.script();

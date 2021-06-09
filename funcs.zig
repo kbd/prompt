@@ -168,6 +168,17 @@ pub fn sep() !void {
     try print(":", .{});
 }
 
+/// horizortal rule
+pub fn hr() !void {
+    var w: std.c.winsize = undefined;
+    _ = std.c.ioctl(std.c.STDOUT_FILENO, std.c.TIOCGWINSZ, &w);
+    var columns = w.ws_col;
+    while (columns > 0) {
+        try print("─", .{});
+        columns -= 1;
+    }
+}
+
 pub fn path() !void {
     const E = prompt.E;
     const cwd = prompt.CWD;

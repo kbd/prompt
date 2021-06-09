@@ -81,6 +81,9 @@ $PROMPT_FULL_VENV
 
 $PROMPT_LINE_BEFORE, $PROMPT_LINE_AFTER
   add newline before/after prompt, this enables a multi-line prompt
+
+$PROMPT_HR
+  set to print a horizontal rule before each prompt line
 ```
 
 ## Configuration
