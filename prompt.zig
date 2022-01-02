@@ -86,7 +86,7 @@ pub const C = .{
     .bright_white = "\x1b[97m",
 };
 
-pub var A: *Allocator = undefined;
+pub var A: Allocator = undefined;
 pub var E: Escapes = undefined;
 pub var CWD: []u8 = undefined;
 
@@ -94,12 +94,12 @@ pub fn main() !void {
     // allocator setup
     var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
     defer arena.deinit();
-    A = &arena.allocator;
+    A = arena.allocator();
 
     // get the specified shell and initialize escape codes
     var shell = Shell.unknown;
     if (std.mem.len(os.argv) > 1) {
-        var arg = std.mem.spanZ(os.argv[1]);
+        var arg = std.mem.span(os.argv[1]);
         if (std.mem.eql(u8, arg, "zsh")) {
             shell = Shell.zsh;
         } else if ((std.mem.eql(u8, arg, "bash"))) {

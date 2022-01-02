@@ -158,7 +158,7 @@ pub fn host() !void {
     _ = std.heap.FixedBufferAllocator.init(&buf);
     var h: []const u8 = try os.gethostname(&buf);
     if (!is_env_true("PROMPT_FULL_HOST")) {
-        h = std.mem.split(h, ".").next().?;
+        h = std.mem.split(u8, h, ".").next().?;
     }
     try print("{s}{s}{s}{s}{s}{s}{s}", .{ E.o, C.blue, E.c, h, E.o, C.reset, E.c });
 }
@@ -218,7 +218,7 @@ pub fn jobs() !void {
     const E = prompt.E;
 
     const prompt_jobs = os.getenv("PROMPT_JOBS") orelse "0 0";
-    var iter = std.mem.split(prompt_jobs, " ");
+    var iter = std.mem.split(u8, prompt_jobs, " ");
     const running = parseZero(iter.next());
     const suspended = parseZero(iter.next());
 
@@ -242,7 +242,7 @@ pub fn jobs() !void {
 
 pub fn direnv() !void {
     const E = prompt.E;
-    if (os.getenv("DIRENV_DIR")) |d| {
+    if (os.getenv("DIRENV_DIR") != null) {
         try print("{s}{s}{s}{s}{s}{s}{s}", .{ E.o, C.blue, E.c, "‡", E.o, C.reset, E.c });
     }
 }
