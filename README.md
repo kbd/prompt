@@ -38,7 +38,7 @@ Because I always wonder these things: the screenshots are in [Kitty terminal](ht
 Requires the Zig programming language to build:
 
 ```
-$ zig build-exe -OReleaseFast prompt.zig
+$ zig build-exe -OReleaseFast -lc prompt.zig
 ```
 
 That creates a binary named `prompt`. I put in `~/bin` so it's in my path.
