@@ -116,8 +116,6 @@ pub fn main() !void {
         },
         else => {
             E = Escapes.init("", "");
-            const c = @cImport(@cInclude("stdlib.h"));
-            _ = c.unsetenv("SHELL"); // force 'interactive' for subprograms
         },
     }
 
