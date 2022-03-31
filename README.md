@@ -40,7 +40,7 @@ All [my system config](https://github.com/kbd/setup) is open source if you're in
 
 Requires the Zig programming language to build:
 
-```
+```shell
 $ git clone --recurse-submodules https://github.com/kbd/prompt.git
 $ cd prompt
 $ zig build-exe -OReleaseFast prompt.zig
