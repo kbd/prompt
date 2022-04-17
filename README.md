@@ -131,9 +131,11 @@ prompt = "echo $(prompt)"
 in .xonshrc:
 
 ```python
-# prompt
 def prmpt():
-  # $PROMPT_RETURN_CODE = __xonsh__.history.last_cmd_rtn  # always zero?
+  try:
+    $PROMPT_RETURN_CODE = __xonsh__.history.rtns[-1]
+  except IndexError:
+    pass
   $PROMPT_PATH = "{short_cwd}"
   return $(prompt)
 
