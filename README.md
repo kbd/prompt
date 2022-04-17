@@ -132,10 +132,8 @@ in .xonshrc:
 
 ```python
 def prmpt():
-  try:
-    $PROMPT_RETURN_CODE = __xonsh__.history.rtns[-1]
-  except IndexError:
-    pass
+  r = __xonsh__.history.rtns
+  $PROMPT_RETURN_CODE = r[-1] if r else 0
   $PROMPT_PATH = "{short_cwd}"
   return $(prompt)
 
