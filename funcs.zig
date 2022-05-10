@@ -242,9 +242,14 @@ pub fn jobs() !void {
 
 pub fn direnv() !void {
     const E = prompt.E;
-    if (os.getenv("DIRENV_DIR") != null) {
-        try print("{s}{s}{s}{s}{s}{s}{s}", .{ E.o, C.blue, E.c, "‡", E.o, C.reset, E.c });
+    const file = os.getenv("DIRENV_FILE") orelse return; // return if not in direnv
+    const dir = std.fs.path.dirname(file) orelse return;
+    const cwd = prompt.CWD;
+    var color = C.blue;
+    if (std.mem.eql(u8, dir, cwd)) { // if direnv in current directory, show in green
+        color = C.green;
     }
+    try print("{s}{s}{s}{s}{s}{s}{s}", .{ E.o, color, E.c, "‡", E.o, C.reset, E.c });
 }
 
 pub fn char() !void {
