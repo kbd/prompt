@@ -178,6 +178,9 @@ pub fn hr() !void {
         try print("─", .{});
         columns -= 1;
     }
+    // zsh is smart and will not put an extra line if your line ends in newline
+    // this will maintain formatting when terminal is resized
+    try print("\n", .{});
 }
 
 pub fn path() !void {
