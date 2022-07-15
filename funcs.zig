@@ -170,7 +170,10 @@ pub fn sep() !void {
 
 /// horizortal rule
 pub fn hr() !void {
+    const E = prompt.E;
     var columns = parseZero(os.getenv("PROMPT_HR"));
+    try print("{s}{s}{s}", .{ E.o, C.bright_black, E.c });
+    defer print("{s}{s}{s}", .{ E.o, C.reset, E.c }) catch {};
     while (columns > 0) {
         try print("─", .{});
         columns -= 1;
