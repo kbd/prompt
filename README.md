@@ -120,10 +120,14 @@ PROMPT_COMMAND='PS1="$(PROMPT_RETURN_CODE=$? PROMPT_PATH="\w" PROMPT_JOBS="$(job
 
 ### Nu shell
 
-in config.toml:
+in `env.nu`:
 
-```
-prompt = "echo $(prompt)"
+```nu
+let-env PROMPT_COMMAND = {
+    let-env PROMPT_HR = (term size | get columns)
+    prompt
+}
+let-env PROMPT_INDICATOR = { "" }
 ```
 
 ### Xonsh
