@@ -36,7 +36,6 @@
 
 const std = @import("std");
 const stdout = std.io.getStdOut().writer();
-const print = stdout.print;
 const os = std.os;
 const Allocator = std.mem.Allocator;
 const funcs = @import("funcs.zig");

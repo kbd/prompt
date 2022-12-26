@@ -1,6 +1,5 @@
 const std = @import("std");
 const stdout = std.io.getStdOut().writer();
-const print = stdout.print;
 const prompt = @import("prompt.zig");
 const os = std.os;
 const fmt = std.fmt;
@@ -24,7 +23,7 @@ fn fileExists(pth: []const u8) bool {
 }
 
 fn is_writeable(pth: []const u8) bool {
-    access(pth, .{ .write = true }) catch return false;
+    access(pth, .{ .mode = .write_only }) catch return false;
     return true;
 }
 
@@ -62,14 +61,14 @@ fn run(argv: []const []const u8) ![]const u8 {
 
 pub fn prefix() !void {
     var p = os.getenv("PROMPT_PREFIX") orelse "";
-    try print("{s}", .{p});
+    try stdout.print("{s}", .{p});
 }
 
 // report if the session is being recorded
 pub fn script() !void {
     const E = prompt.E;
     if (os.getenv("SCRIPT")) |s| {
-        try print("{s}{s}{s}{s}{s}{s}{s}", .{ E.o, C.white, E.c, s, E.o, C.reset, E.c });
+        try stdout.print("{s}{s}{s}{s}{s}{s}{s}", .{ E.o, C.white, E.c, s, E.o, C.reset, E.c });
     }
 }
 
@@ -77,7 +76,7 @@ pub fn script() !void {
 pub fn tab() !void {
     const E = prompt.E;
     if (os.getenv("TAB")) |t| {
-        try print("[{s}{s}{s}{s}{s}{s}{s}]", .{ E.o, C.green, E.c, t, E.o, C.reset, E.c });
+        try stdout.print("[{s}{s}{s}{s}{s}{s}{s}]", .{ E.o, C.green, E.c, t, E.o, C.reset, E.c });
     }
 }
 
@@ -101,7 +100,7 @@ pub fn screen() !void {
             name = os.getenv("STY") orelse "";
             window = os.getenv("WINDOW") orelse "";
         }
-        try print("[{s}{s}{s}{s}{s}{s}{s}:{s}{s}{s}{s}{s}{s}{s}:{s}{s}{s}{s}{s}{s}{s}]", .{
+        try stdout.print("[{s}{s}{s}{s}{s}{s}{s}:{s}{s}{s}{s}{s}{s}{s}:{s}{s}{s}{s}{s}{s}{s}]", .{
             E.o, C.green,   E.c, scr,    E.o, C.reset, E.c,
             E.o, C.blue,    E.c, name,   E.o, C.reset, E.c,
             E.o, C.magenta, E.c, window, E.o, C.reset, E.c,
@@ -121,9 +120,9 @@ pub fn venv() !void {
     if (os.getenv("VIRTUAL_ENV")) |v| {
         if (is_env_true("PROMPT_FULL_VENV")) {
             var name = std.fs.path.basename(v);
-            try print("[{s}{s}{s}{s}{s}{s}{s}{s}]", .{ E.o, C.green, E.c, "🐍", name, E.o, C.reset, E.c });
+            try stdout.print("[{s}{s}{s}{s}{s}{s}{s}{s}]", .{ E.o, C.green, E.c, "🐍", name, E.o, C.reset, E.c });
         } else {
-            try print("🐍", .{});
+            try stdout.print("🐍", .{});
         }
     }
 }
@@ -138,17 +137,17 @@ pub fn user() !void {
     } else if (is_su()) {
         color = try fmt.allocPrint(prompt.A, "{s}{s}", .{ C.bold, C.yellow });
     }
-    var u = os.getenv("USER");
-    try print("{s}{s}{s}{s}{s}{s}{s}", .{ E.o, color, E.c, u, E.o, C.reset, E.c });
+    var u = os.getenv("USER") orelse "";
+    try stdout.print("{s}{s}{s}{s}{s}{s}{s}", .{ E.o, color, E.c, u, E.o, C.reset, E.c });
 }
 
 pub fn at() !void {
     const E = prompt.E;
     // show the @ in red if not local
     if (is_remote()) {
-        try print("{s}{s}{s}{s}{s}{s}{s}{s}", .{ E.o, C.red, C.bold, E.c, "@", E.o, C.reset, E.c });
+        try stdout.print("{s}{s}{s}{s}{s}{s}{s}{s}", .{ E.o, C.red, C.bold, E.c, "@", E.o, C.reset, E.c });
     } else {
-        try print("@", .{});
+        try stdout.print("@", .{});
     }
 }
 
@@ -158,29 +157,30 @@ pub fn host() !void {
     _ = std.heap.FixedBufferAllocator.init(&buf);
     var h: []const u8 = try os.gethostname(&buf);
     if (!is_env_true("PROMPT_FULL_HOST")) {
-        h = std.mem.split(u8, h, ".").next().?;
+        var iter = std.mem.split(u8, h, ".");
+        h = iter.first();
     }
-    try print("{s}{s}{s}{s}{s}{s}{s}", .{ E.o, C.blue, E.c, h, E.o, C.reset, E.c });
+    try stdout.print("{s}{s}{s}{s}{s}{s}{s}", .{ E.o, C.blue, E.c, h, E.o, C.reset, E.c });
 }
 
 /// separator - C.red if cwd unwritable
 pub fn sep() !void {
-    try print(":", .{});
+    try stdout.print(":", .{});
 }
 
 /// horizortal rule
 pub fn hr() !void {
     const E = prompt.E;
     var columns = parseZero(os.getenv("PROMPT_HR"));
-    try print("{s}{s}{s}", .{ E.o, C.bright_black, E.c });
-    defer print("{s}{s}{s}", .{ E.o, C.reset, E.c }) catch {};
+    try stdout.print("{s}{s}{s}", .{ E.o, C.bright_black, E.c });
+    defer stdout.print("{s}{s}{s}", .{ E.o, C.reset, E.c }) catch {};
     while (columns > 0) {
-        try print("─", .{});
+        try stdout.print("─", .{});
         columns -= 1;
     }
     // zsh is smart and will not put an extra line if your line ends in newline
     // this will maintain formatting when terminal is resized
-    try print("\n", .{});
+    try stdout.print("\n", .{});
 }
 
 pub fn path() !void {
@@ -193,7 +193,7 @@ pub fn path() !void {
     }
 
     const p = os.getenv("PROMPT_PATH") orelse cwd;
-    try print("{s}{s}{s}{s}{s}{s}{s}", .{ E.o, color, E.c, p, E.o, C.reset, E.c });
+    try stdout.print("{s}{s}{s}{s}{s}{s}{s}", .{ E.o, color, E.c, p, E.o, C.reset, E.c });
 }
 
 // source control information
@@ -205,12 +205,12 @@ pub fn repo() !void {
     if (!repo_status.isGitRepo(cwd))
         return;
 
-    try print("[", .{});
+    try stdout.print("[", .{});
     var status = try repo_status.getFullRepoStatus(cwd);
     // convert to repo_status's version of Escapes, unify in library later
     var escapes = repo_status.Escapes.init(E.o, E.c);
     try repo_status.writeStatusStr(escapes, status);
-    try print("]", .{});
+    try stdout.print("]", .{});
 }
 
 pub inline fn parseZero(val: ?[]const u8) u32 {
@@ -242,7 +242,7 @@ pub fn jobs() !void {
         j = try fmt.allocPrint(A, "{s}{s}{s}{s}{}z{s}{s}{s}", .{ j, E.o, C.red, E.c, suspended, E.o, C.reset, E.c });
     }
     if (!std.mem.eql(u8, j, "")) {
-        try print("[{s}]", .{j});
+        try stdout.print("[{s}]", .{j});
     }
 }
 
@@ -255,7 +255,7 @@ pub fn direnv() !void {
     if (std.mem.eql(u8, dir, cwd)) { // if direnv in current directory, show in green
         color = C.green;
     }
-    try print("{s}{s}{s}{s}{s}{s}{s}", .{ E.o, color, E.c, "‡", E.o, C.reset, E.c });
+    try stdout.print("{s}{s}{s}{s}{s}{s}{s}", .{ E.o, color, E.c, "‡", E.o, C.reset, E.c });
 }
 
 pub fn char() !void {
@@ -264,15 +264,15 @@ pub fn char() !void {
     var code = parseZero(os.getenv("PROMPT_RETURN_CODE"));
     var c = if (is_root()) "#" else "$";
     if (code == 0) {
-        try print("{s}{s}{s}{s}", .{ E.o, C.green, E.c, c });
+        try stdout.print("{s}{s}{s}{s}", .{ E.o, C.green, E.c, c });
     } else {
-        try print("{s}{s}{s}{s}:{}", .{ E.o, C.red, E.c, c, code });
+        try stdout.print("{s}{s}{s}{s}:{}", .{ E.o, C.red, E.c, c, code });
     }
-    try print("{s}{s}{s} ", .{ E.o, C.reset, E.c });
+    try stdout.print("{s}{s}{s} ", .{ E.o, C.reset, E.c });
 }
 
 pub fn newline_if(env_name: []const u8) !void {
     if (is_env_true(env_name)) {
-        try print("\n", .{});
+        try stdout.print("\n", .{});
     }
 }
