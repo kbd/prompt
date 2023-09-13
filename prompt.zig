@@ -97,7 +97,7 @@ pub fn main() !void {
 
     // get the specified shell and initialize escape codes
     var shell = Shell.unknown;
-    if (std.mem.len(os.argv) > 1) {
+    if (os.argv.len > 1) {
         var arg = std.mem.span(os.argv[1]);
         if (std.mem.eql(u8, arg, "zsh")) {
             shell = Shell.zsh;
