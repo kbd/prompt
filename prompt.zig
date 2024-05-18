@@ -98,7 +98,7 @@ pub fn main() !void {
     // get the specified shell and initialize escape codes
     var shell = Shell.unknown;
     if (os.argv.len > 1) {
-        var arg = std.mem.span(os.argv[1]);
+        const arg = std.mem.span(os.argv[1]);
         if (std.mem.eql(u8, arg, "zsh")) {
             shell = Shell.zsh;
         } else if ((std.mem.eql(u8, arg, "bash"))) {
@@ -120,7 +120,7 @@ pub fn main() !void {
 
     // state
     var buf: [std.fs.MAX_PATH_BYTES]u8 = undefined;
-    CWD = try std.os.getcwd(&buf);
+    CWD = try std.posix.getcwd(&buf);
     const long = funcs.is_env_true("PROMPT_LONG");
 
     // print prompt

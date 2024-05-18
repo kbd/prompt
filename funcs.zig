@@ -1,15 +1,15 @@
 const std = @import("std");
 const stdout = std.io.getStdOut().writer();
 const prompt = @import("prompt.zig");
-const os = std.os;
+const os = std.posix;
 const fmt = std.fmt;
 const repo_status = @import("repo_status/repo_status.zig");
 
 const C = prompt.C;
 
 fn is_remote() bool {
-    var tty = os.getenv("SSH_TTY");
-    var client = os.getenv("SSH_CLIENT");
+    const tty = os.getenv("SSH_TTY");
+    const client = os.getenv("SSH_CLIENT");
     return tty != null or client != null;
 }
 
@@ -40,19 +40,19 @@ pub fn is_local() bool {
 }
 
 pub fn is_su() bool {
-    var usr = os.getenv("USER") orelse "";
-    var logname = os.getenv("LOGNAME") orelse "";
+    const usr = os.getenv("USER") orelse "";
+    const logname = os.getenv("LOGNAME") orelse "";
     return !std.mem.eql(u8, usr, logname);
 }
 
 pub fn is_root() bool {
-    var euid_str = os.getenv("EUID") orelse "1000";
-    var euid = fmt.parseInt(u32, euid_str, 10) catch 1000;
+    const euid_str = os.getenv("EUID") orelse "1000";
+    const euid = fmt.parseInt(u32, euid_str, 10) catch 1000;
     return euid == 0;
 }
 
 fn run(argv: []const []const u8) ![]const u8 {
-    const result = try std.ChildProcess.exec(.{
+    const result = try std.ChildProcess.run(.{
         .allocator = prompt.A,
         .argv = argv,
     });
@@ -60,7 +60,7 @@ fn run(argv: []const []const u8) ![]const u8 {
 }
 
 pub fn prefix() !void {
-    var p = os.getenv("PROMPT_PREFIX") orelse "";
+    const p = os.getenv("PROMPT_PREFIX") orelse "";
     try stdout.print("{s}", .{p});
 }
 
@@ -119,7 +119,7 @@ pub fn venv() !void {
     const E = prompt.E;
     if (os.getenv("VIRTUAL_ENV")) |v| {
         if (is_env_true("PROMPT_FULL_VENV")) {
-            var name = std.fs.path.basename(v);
+            const name = std.fs.path.basename(v);
             try stdout.print("[{s}{s}{s}{s}{s}{s}{s}{s}]", .{ E.o, C.green, E.c, "🐍", name, E.o, C.reset, E.c });
         } else {
             try stdout.print("🐍", .{});
@@ -137,7 +137,7 @@ pub fn user() !void {
     } else if (is_su()) {
         color = try fmt.allocPrint(prompt.A, "{s}{s}", .{ C.bold, C.yellow });
     }
-    var u = os.getenv("USER") orelse "";
+    const u = os.getenv("USER") orelse "";
     try stdout.print("{s}{s}{s}{s}{s}{s}{s}", .{ E.o, color, E.c, u, E.o, C.reset, E.c });
 }
 
@@ -206,9 +206,9 @@ pub fn repo() !void {
         return;
 
     try stdout.print("[", .{});
-    var status = try repo_status.getFullRepoStatus(cwd);
+    const status = try repo_status.getFullRepoStatus(cwd);
     // convert to repo_status's version of Escapes, unify in library later
-    var escapes = repo_status.Escapes.init(E.o, E.c);
+    const escapes = repo_status.Escapes.init(E.o, E.c);
     try repo_status.writeStatusStr(escapes, status);
     try stdout.print("]", .{});
 }
@@ -261,8 +261,8 @@ pub fn direnv() !void {
 pub fn char() !void {
     const E = prompt.E;
 
-    var code = parseZero(os.getenv("PROMPT_RETURN_CODE"));
-    var c = if (is_root()) "#" else "$";
+    const code = parseZero(os.getenv("PROMPT_RETURN_CODE"));
+    const c = if (is_root()) "#" else "$";
     if (code == 0) {
         try stdout.print("{s}{s}{s}{s}", .{ E.o, C.green, E.c, c });
     } else {
