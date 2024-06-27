@@ -94,7 +94,7 @@ $PROMPT_HR
 
 ### Zsh
 
-in .zshrc:
+in `.zshrc`:
 
 ```zsh
 setopt prompt_subst # execute the contents of PROMPT
@@ -111,7 +111,7 @@ precmd() {
 
 ### Bash
 
-in .bashrc
+in `.bashrc`:
 
 ```bash
 jobscount() {
@@ -135,7 +135,7 @@ let-env PROMPT_INDICATOR = { "" }
 
 ### Xonsh
 
-in .xonshrc:
+in `.xonshrc`:
 
 ```python
 def prmpt():
