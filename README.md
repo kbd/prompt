@@ -97,6 +97,8 @@ $PROMPT_HR
 in .zshrc:
 
 ```zsh
+setopt prompt_subst # execute the contents of PROMPT
+
 alias title='printf "\e]0;%s\a"' # set window title
 PROMPT='$(prompt zsh)'
 precmd() {
