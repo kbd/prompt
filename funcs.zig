@@ -52,7 +52,7 @@ pub fn is_root() bool {
 }
 
 fn run(argv: []const []const u8) ![]const u8 {
-    const result = try std.ChildProcess.run(.{
+    const result = try std.process.Child.run(.{
         .allocator = prompt.A,
         .argv = argv,
     });
