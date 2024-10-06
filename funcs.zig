@@ -170,17 +170,19 @@ pub fn sep() !void {
 
 /// horizortal rule
 pub fn hr() !void {
-    const E = prompt.E;
     var columns = parseZero(os.getenv("PROMPT_HR"));
-    try stdout.print("{s}{s}{s}", .{ E.o, C.bright_black, E.c });
-    defer stdout.print("{s}{s}{s}", .{ E.o, C.reset, E.c }) catch {};
-    while (columns > 0) {
-        try stdout.print("─", .{});
-        columns -= 1;
+    if (columns > 0) {
+        const E = prompt.E;
+        try stdout.print("{s}{s}{s}", .{ E.o, C.bright_black, E.c });
+        defer stdout.print("{s}{s}{s}", .{ E.o, C.reset, E.c }) catch {};
+        while (columns > 0) {
+            try stdout.print("─", .{});
+            columns -= 1;
+        }
+        // zsh is smart and will not put an extra line if your line ends in newline
+        // this will maintain formatting when terminal is resized
+        try stdout.print("\n", .{});
     }
-    // zsh is smart and will not put an extra line if your line ends in newline
-    // this will maintain formatting when terminal is resized
-    try stdout.print("\n", .{});
 }
 
 pub fn path() !void {
