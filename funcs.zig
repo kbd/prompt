@@ -157,7 +157,7 @@ pub fn host() !void {
     _ = std.heap.FixedBufferAllocator.init(&buf);
     var h: []const u8 = try os.gethostname(&buf);
     if (!is_env_true("PROMPT_FULL_HOST")) {
-        var iter = std.mem.split(u8, h, ".");
+        var iter = std.mem.splitScalar(u8, h, '.');
         h = iter.first();
     }
     try stdout.print("{s}{s}{s}{s}{s}{s}{s}", .{ E.o, C.blue, E.c, h, E.o, C.reset, E.c });
@@ -226,7 +226,7 @@ pub fn jobs() !void {
     const E = prompt.E;
 
     const prompt_jobs = os.getenv("PROMPT_JOBS") orelse "0 0";
-    var iter = std.mem.split(u8, prompt_jobs, " ");
+    var iter = std.mem.splitScalar(u8, prompt_jobs, ' ');
     const running = parseZero(iter.next());
     const suspended = parseZero(iter.next());
 

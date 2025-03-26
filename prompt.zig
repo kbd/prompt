@@ -119,7 +119,7 @@ pub fn main() !void {
     }
 
     // state
-    var buf: [std.fs.MAX_PATH_BYTES]u8 = undefined;
+    var buf: [std.fs.max_path_bytes]u8 = undefined;
     CWD = try std.posix.getcwd(&buf);
     const long = funcs.is_env_true("PROMPT_LONG");
 
