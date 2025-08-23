@@ -35,10 +35,14 @@
 //!    set to $COLUMNS to print a horizontal rule before each prompt line
 
 const std = @import("std");
-const stdout = std.io.getStdOut().writer();
 const os = std.os;
 const Allocator = std.mem.Allocator;
 const funcs = @import("funcs.zig");
+const repo_status = @import("repo_status/repo_status.zig");
+
+var stdout_buffer: [1024]u8 = undefined;
+var stdout_writer = std.fs.File.stdout().writer(&stdout_buffer);
+pub const stdout = &stdout_writer.interface;
 
 pub const Escapes = struct {
     o: [:0]const u8 = undefined,
@@ -94,6 +98,9 @@ pub fn main() !void {
     var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
     defer arena.deinit();
     A = arena.allocator();
+
+    // use my stdout for repo_status output
+    repo_status.stdout = stdout;
 
     // get the specified shell and initialize escape codes
     var shell = Shell.unknown;
@@ -163,4 +170,5 @@ pub fn main() !void {
         try funcs.newline_if("PROMPT_LINE_AFTER");
     }
     try funcs.char();
+    try stdout.flush();
 }

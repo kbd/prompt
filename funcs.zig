@@ -1,9 +1,9 @@
 const std = @import("std");
-const stdout = std.io.getStdOut().writer();
 const prompt = @import("prompt.zig");
 const os = std.posix;
 const fmt = std.fmt;
 const repo_status = @import("repo_status/repo_status.zig");
+const stdout = prompt.stdout;
 
 const C = prompt.C;
 
