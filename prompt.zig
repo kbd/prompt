@@ -130,9 +130,6 @@ pub fn main() !void {
     CWD = try std.posix.getcwd(&buf);
     const long = funcs.is_env_true("PROMPT_LONG");
 
-    // kick off any per-directory tasks
-    try funcs.set_kitty_tab_color();
-
     // print prompt
     try funcs.newline_if("PROMPT_LINE_BEFORE");
     if (!funcs.is_env_true("PROMPT_BARE")) {

@@ -282,30 +282,3 @@ pub fn newline_if(env_name: []const u8) !void {
 pub fn formatArg(arg: []const u8, value: []const u8) ![]const u8 {
     return try std.fmt.allocPrint(prompt.A, "{s}={s}", .{ arg, value });
 }
-
-pub fn set_kitty_tab_color() !void {
-    // run kitty asynchronously and don't wait for result
-    const term = os.getenv("TERM") orelse "";
-    const listen = os.getenv("KITTY_LISTEN_ON") orelse "";
-    if (!std.mem.eql(u8, term, "xterm-kitty") or std.mem.eql(u8, listen, "")) {
-        return;
-    }
-
-    const afg = os.getenv("KITTY_TAB_AFG") orelse "NONE";
-    const abg = os.getenv("KITTY_TAB_ABG") orelse "NONE";
-    const ifg = os.getenv("KITTY_TAB_IFG") orelse "NONE";
-    const ibg = os.getenv("KITTY_TAB_IBG") orelse "NONE";
-
-    // zig fmt: off
-    const cmd = [_][]const u8{
-        "kitty", "@", "set-tab-color", "--self",
-        try formatArg("active_fg", afg),
-        try formatArg("active_bg", abg),
-        try formatArg("inactive_fg", ifg),
-        try formatArg("inactive_bg", ibg),
-    };
-    // zig fmt: on
-
-    var child = std.process.Child.init(&cmd, prompt.A);
-    return child.spawn();
-}
