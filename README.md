@@ -94,7 +94,7 @@ $PROMPT_HR
 
 ### Zsh
 
-in `.zshrc` (here is [my current .zshrc](https://github.com/kbd/setup/blob/main/HOME/.zshrc) for example):
+in `.zshrc` (see [my current zsh prompt config](https://github.com/kbd/setup/blob/main/HOME/bin/shell/prompt.zsh)):
 
 ```zsh
 setopt prompt_subst # execute the contents of PROMPT
